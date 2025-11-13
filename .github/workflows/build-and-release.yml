@@ -113,13 +113,17 @@ jobs:
           draft: false
           prerelease: false
           
+      - name: Get version from tag
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          
       - name: Upload macOS DMG (x64)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/macos-dmg/Shift-1.0.0.dmg
+          asset_path: artifacts/macos-dmg/Shift-${{ steps.get_version.outputs.version }}.dmg
           asset_name: Shift-${{ github.ref_name }}-macos-x64.dmg
           asset_content_type: application/octet-stream
           
@@ -129,7 +133,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/macos-dmg/Shift-1.0.0-arm64.dmg
+          asset_path: artifacts/macos-dmg/Shift-${{ steps.get_version.outputs.version }}-arm64.dmg
           asset_name: Shift-${{ github.ref_name }}-macos-arm64.dmg
           asset_content_type: application/octet-stream
           
@@ -139,6 +143,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/windows-installer/Shift Setup 1.0.0.exe
+          asset_path: artifacts/windows-installer/Shift Setup ${{ steps.get_version.outputs.version }}.exe
           asset_name: Shift-Setup-${{ github.ref_name }}.exe
           asset_content_type: application/octet-stream
