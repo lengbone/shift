@@ -1,0 +1,175 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # 触发条件：推送版本标签 (如 v1.0.0)
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build for macOS
+        if: matrix.os == 'macos-latest'
+        run: npm run build:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build for Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run build:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload macOS artifacts
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: |
+            dist/*.dmg
+            dist/*.dmg.blockmap
+            
+      - name: Upload Windows artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            dist/*.exe
+            dist/*.exe.blockmap
+            
+      - name: Upload Linux artifacts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
+            dist/*.*map
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          
+      - name: Display structure of downloaded files
+        run: ls -la artifacts/
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Shift ${{ github.ref_name }}
+          body: |
+            ## 🚀 Shift ${{ github.ref_name }}
+            
+            ### 📦 下载
+            
+            - **macOS**: 下载 `.dmg` 文件
+            - **Windows**: 下载 `.exe` 安装程序
+            - **Linux**: 下载 `.AppImage` 或 `.deb` 文件
+            
+            ### ✨ 新功能
+            - 支持 VSCode、Cursor、Trae、Windsurf、Qoder 编辑器
+            - 配置和插件迁移
+            - 完整备份管理
+            - 跨平台支持
+            
+            ### 🔧 安装说明
+            
+            #### macOS
+            1. 下载 `.dmg` 文件
+            2. 双击打开并拖拽到 Applications 文件夹
+            
+            #### Windows
+            1. 下载 `.exe` 安装程序
+            2. 运行安装程序并按提示操作
+            
+            #### Linux
+            1. 下载 `.AppImage` 文件并添加执行权限
+            2. 或下载 `.deb` 文件使用包管理器安装
+            
+            ---
+            
+            完整更新日志请查看 [CHANGELOG.md](CHANGELOG.md)
+          draft: false
+          prerelease: false
+          
+      - name: Upload macOS DMG (x64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/macos-dmg/Shift-${{ github.ref_name }}.dmg
+          asset_name: Shift-${{ github.ref_name }}-macos-x64.dmg
+          asset_content_type: application/octet-stream
+          
+      - name: Upload macOS DMG (ARM64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/macos-dmg/Shift-${{ github.ref_name }}-arm64.dmg
+          asset_name: Shift-${{ github.ref_name }}-macos-arm64.dmg
+          asset_content_type: application/octet-stream
+          
+      - name: Upload Windows Installer
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/windows-installer/Shift Setup ${{ github.ref_name }}.exe
+          asset_name: Shift-Setup-${{ github.ref_name }}.exe
+          asset_content_type: application/octet-stream
+          
+      - name: Upload Linux AppImage
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/linux-packages/Shift-${{ github.ref_name }}.AppImage
+          asset_name: Shift-${{ github.ref_name }}-linux.AppImage
+          asset_content_type: application/octet-stream

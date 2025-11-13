@@ -1,0 +1,113 @@
+{
+  "name": "shift",
+  "version": "1.0.0",
+  "description": "现代化跨平台编辑器配置迁移工具",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "release:patch": "node scripts/release.js patch",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major",
+    "version": "echo $npm_package_version"
+  },
+  "keywords": [
+    "vscode",
+    "cursor",
+    "trae",
+    "windsurf",
+    "qoder",
+    "config",
+    "migration"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^39.1.2",
+    "electron-builder": "^24.9.1",
+    "svg2png-many": "^0.0.7"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "tar": "^6.2.0"
+  },
+  "build": {
+    "appId": "com.shiftapp.shift",
+    "productName": "Shift",
+    "copyright": "Copyright 2024 Shift Team",
+    "icon": "assets/icon",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "assets/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32",
+            "arm64"
+          ]
+        }
+      ],
+      "publisherName": "Shift Team",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Shift",
+      "deleteAppDataOnUninstall": true,
+      "runAfterFinish": false,
+      "menuCategory": "Development"
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    }
+  }
+}

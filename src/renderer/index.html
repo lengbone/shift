@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift - 配置迁移工具</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 自定义标题栏 -->
+        <div class="custom-titlebar">
+            <div class="titlebar-left">
+                <div class="window-controls">
+                    <button class="window-control close" onclick="window.close()">×</button>
+                    <button class="window-control minimize" onclick="window.minimize()">−</button>
+                </div>
+            </div>
+            <div class="titlebar-center">
+            </div>
+            <div class="titlebar-right"></div>
+        </div>
+        
+        <!-- 侧边栏导航 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <svg class="app-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2383e2"/>
+                                <stop offset="100%" style="stop-color:#1a73d0"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M8 12 L16 6 L24 12 L20 16 L16 12 L12 16 Z" fill="url(#logoGradient)" opacity="0.9"/>
+                        <path d="M8 20 L12 16 L16 20 L20 16 L24 20 L16 26 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    </svg>
+                    <h1>Shift</h1>
+                </div>
+                <p>现代化配置迁移工具</p>
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="nav-item active" data-tab="editors">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 4 L17 4 L17 6 L3 6 Z M3 8 L17 8 L17 10 L3 10 Z M3 12 L13 12 L13 14 L3 14 Z M15 12 L17 12 L17 16 L15 16 Z" fill="currentColor" opacity="0.8"/>
+                        </svg>
+                    </span>
+                    <span class="nav-text">编辑器检测</span>
+                </div>
+                <div class="nav-item" data-tab="config">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.8"/>
+                            <path d="M10 1 L10 3 M10 17 L10 19 M19 10 L17 10 M3 10 L1 10 M15.5 4.5 L14.1 5.9 M5.9 14.1 L4.5 15.5 M15.5 15.5 L14.1 14.1 M5.9 5.9 L4.5 4.5" stroke="currentColor" stroke-width="1.5" opacity="0.8"/>
+                        </svg>
+                    </span>
+                    <span class="nav-text">配置管理</span>
+                </div>
+                <div class="nav-item" data-tab="extensions">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="6" height="6" rx="1" fill="currentColor" opacity="0.8"/>
+                            <rect x="12" y="2" width="6" height="6" rx="1" fill="currentColor" opacity="0.6"/>
+                            <rect x="2" y="12" width="6" height="6" rx="1" fill="currentColor" opacity="0.6"/>
+                            <rect x="12" y="12" width="6" height="6" rx="1" fill="currentColor" opacity="0.4"/>
+                        </svg>
+                    </span>
+                    <span class="nav-text">插件管理</span>
+                </div>
+                <div class="nav-item" data-tab="backup">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 6 L4 16 C4 17.1 4.9 18 6 18 L14 18 C15.1 18 16 17.1 16 16 L16 6" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
+                            <path d="M6 6 L6 4 C6 2.9 6.9 2 8 2 L12 2 C13.1 2 14 2.9 14 4 L14 6" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
+                            <circle cx="10" cy="11" r="2" fill="currentColor" opacity="0.6"/>
+                        </svg>
+                    </span>
+                    <span class="nav-text">备份管理</span>
+                </div>
+                <div class="nav-item" data-tab="logs">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
+                            <path d="M6 8 L14 8 M6 11 L12 11 M6 14 L10 14" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                        </svg>
+                    </span>
+                    <span class="nav-text">操作日志</span>
+                </div>
+            </div>
+            
+            <!-- 暗色模式切换按钮 -->
+            <div class="sidebar-footer">
+                <button class="theme-toggle" onclick="toggleTheme()" title="切换暗色模式">
+                    <svg class="theme-icon sun-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <svg class="theme-icon moon-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor"/>
+                    </svg>
+                    <span class="theme-text">暗色模式</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 编辑器检测 -->
+            <div class="content-panel active" id="editors-panel">
+                <div class="panel-header">
+                    <h2>编辑器检测</h2>
+                    <p>检测系统中已安装的VSCode衍生编辑器</p>
+                </div>
+                <div class="panel-body">
+                    <button id="detectEditorsBtn" class="btn btn-primary">检测编辑器</button>
+                    <div id="editorList" class="editor-list"></div>
+                </div>
+            </div>
+
+            <!-- 配置管理 -->
+            <div class="content-panel" id="config-panel">
+                <div class="panel-header">
+                    <h2>配置管理</h2>
+                    <p>导入导出编辑器配置文件</p>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label>选择源编辑器</label>
+                        <select id="sourceEditor" class="select">
+                            <option value="">请选择编辑器</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button id="exportConfigBtn" class="btn btn-primary" disabled>导出配置</button>
+                        <button id="importConfigBtn" class="btn btn-secondary">导入配置</button>
+                        <button id="importConfigFromBackupBtn" class="btn btn-secondary">从备份导入</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 插件管理 -->
+            <div class="content-panel" id="extensions-panel">
+                <div class="panel-header">
+                    <h2>插件管理</h2>
+                    <p>管理编辑器插件的导入导出</p>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label>选择编辑器</label>
+                        <select id="extensionEditor" class="select">
+                            <option value="">请选择编辑器</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button id="loadExtensionsBtn" class="btn btn-primary" disabled>加载插件</button>
+                        <button id="exportExtensionsBtn" class="btn btn-secondary" disabled>导出插件</button>
+                        <button id="importExtensionsBtn" class="btn btn-secondary">导入插件</button>
+                        <button id="importExtensionsFromBackupBtn" class="btn btn-secondary">从备份导入</button>
+                    </div>
+                    <div class="extension-controls">
+                        <div class="extension-search">
+                            <input type="text" id="extensionSearchInput" class="search-input" placeholder="搜索插件...">
+                        </div>
+                        <div class="extension-stats">
+                            <span id="extensionStats">请先加载插件</span>
+                        </div>
+                    </div>
+                    <div id="extensionList" class="extension-grid"></div>
+                </div>
+            </div>
+
+            <!-- 备份管理 -->
+            <div class="content-panel" id="backup-panel">
+                <div class="panel-header">
+                    <h2>备份管理</h2>
+                    <p>创建和管理配置备份</p>
+                </div>
+                <div class="panel-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>选择编辑器</label>
+                            <select id="backupEditor" class="select">
+                                <option value="">请选择编辑器</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>备份名称</label>
+                            <input type="text" id="backupName" class="input" placeholder="可选">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="createBackupBtn" class="btn btn-primary" disabled>创建备份</button>
+                        <button id="refreshBackupsBtn" class="btn btn-secondary">刷新列表</button>
+                    </div>
+                    <div id="backupList" class="backup-list"></div>
+                </div>
+            </div>
+
+            <!-- 操作日志 -->
+            <div class="content-panel" id="logs-panel">
+                <div class="panel-header">
+                    <h2>操作日志</h2>
+                    <p>查看应用操作记录</p>
+                </div>
+                <div class="panel-body">
+                    <div class="log-actions">
+                        <button id="clearLogBtn" class="btn btn-secondary">清空日志</button>
+                    </div>
+                    <div id="logContainer" class="log-container"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

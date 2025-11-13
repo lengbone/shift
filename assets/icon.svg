@@ -1,0 +1,23 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 蓝色渐变 -->
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2383e2"/>
+      <stop offset="100%" style="stop-color:#1a73d0"/>
+    </linearGradient>
+    
+    <!-- 阴影滤镜 -->
+    <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#2383e2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- 白色圆形背景 -->
+  <circle cx="128" cy="128" r="120" fill="#ffffff" stroke="#e1e5f0" stroke-width="2" filter="url(#dropShadow)"/>
+  
+  <!-- 与前端logo完全一致的图标，按比例放大 -->
+  <g transform="translate(128, 128) scale(8)">
+    <path d="M-8 -4 L0 -10 L8 -4 L4 0 L0 -4 L-4 0 Z" fill="url(#logoGradient)" opacity="0.9"/>
+    <path d="M-8 4 L-4 0 L0 4 L4 0 L8 4 L0 10 Z" fill="url(#logoGradient)" opacity="0.6"/>
+  </g>
+</svg>
