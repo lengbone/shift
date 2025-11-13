@@ -243,13 +243,49 @@ class ExtensionManager {
           }
           
           if (packageJson && packageJson.publisher && packageJson.name) {
+            // 处理 displayName，如果是本地化变量则尝试解析
+            let displayName = packageJson.displayName || packageJson.name;
+            let description = packageJson.description || '';
+            
+            if (displayName && displayName.startsWith('%') && displayName.endsWith('%')) {
+              // 尝试从本地化文件读取
+              try {
+                const nlsPath = path.join(extensionPath, 'package.nls.json');
+                if (await fs.pathExists(nlsPath)) {
+                  const nlsData = await fs.readJson(nlsPath);
+                  const key = displayName.slice(1, -1); // 移除 % 符号
+                  displayName = nlsData[key] || packageJson.name;
+                } else {
+                  displayName = packageJson.name;
+                }
+              } catch (nlsError) {
+                displayName = packageJson.name;
+              }
+            }
+            
+            // 同样处理 description
+            if (description && description.startsWith('%') && description.endsWith('%')) {
+              try {
+                const nlsPath = path.join(extensionPath, 'package.nls.json');
+                if (await fs.pathExists(nlsPath)) {
+                  const nlsData = await fs.readJson(nlsPath);
+                  const key = description.slice(1, -1);
+                  description = nlsData[key] || '';
+                } else {
+                  description = '';
+                }
+              } catch (nlsError) {
+                description = '';
+              }
+            }
+            
             extensions.push({
               identifier: `${packageJson.publisher}.${packageJson.name}`,
               publisher: packageJson.publisher,
               name: packageJson.name,
               version: packageJson.version || 'unknown',
-              displayName: packageJson.displayName || packageJson.name,
-              description: packageJson.description || '',
+              displayName: displayName,
+              description: description,
               source: 'filesystem'
             });
           } else {
