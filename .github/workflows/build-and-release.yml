@@ -11,6 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     strategy:
+      fail-fast: false  # 不要因为一个平台失败就取消其他平台
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
         
@@ -26,6 +27,12 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
+        
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libxss1 libasound2
         
       - name: Build for macOS
         if: matrix.os == 'macos-latest'
@@ -140,7 +147,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/macos-dmg/Shift-${{ github.ref_name }}.dmg
+          asset_path: artifacts/macos-dmg/Shift-1.0.0.dmg
           asset_name: Shift-${{ github.ref_name }}-macos-x64.dmg
           asset_content_type: application/octet-stream
           
@@ -150,7 +157,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/macos-dmg/Shift-${{ github.ref_name }}-arm64.dmg
+          asset_path: artifacts/macos-dmg/Shift-1.0.0-arm64.dmg
           asset_name: Shift-${{ github.ref_name }}-macos-arm64.dmg
           asset_content_type: application/octet-stream
           
@@ -160,7 +167,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/windows-installer/Shift Setup ${{ github.ref_name }}.exe
+          asset_path: artifacts/windows-installer/Shift Setup 1.0.0.exe
           asset_name: Shift-Setup-${{ github.ref_name }}.exe
           asset_content_type: application/octet-stream
           
@@ -170,6 +177,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/linux-packages/Shift-${{ github.ref_name }}.AppImage
+          asset_path: artifacts/linux-packages/Shift-1.0.0.AppImage
           asset_name: Shift-${{ github.ref_name }}-linux.AppImage
           asset_content_type: application/octet-stream
