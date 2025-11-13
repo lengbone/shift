@@ -20,15 +20,14 @@
 - 导出/导入编辑器配置（设置、快捷键、代码片段）
 - 导出/导入插件列表
 - 创建和恢复备份
-- 跨平台支持（Windows、macOS、Linux）
+- 跨平台支持（Windows、macOS）
 
 ## 安装
 
-去 [Releases](https://github.com/your-username/shift/releases) 下载对应平台的安装包：
+去 [Releases](https://github.com/lengbone/shift/releases) 下载对应平台的安装包：
 
 - Windows: `.exe` 安装程序
 - macOS: `.dmg` 文件
-- Linux: `.AppImage` 或 `.deb` 包
 
 ## 使用
 
@@ -50,7 +49,6 @@ npm run dev
 ```bash
 npm run build:win    # Windows
 npm run build:mac    # macOS  
-npm run build:linux  # Linux
 ```
 
 ## 技术栈

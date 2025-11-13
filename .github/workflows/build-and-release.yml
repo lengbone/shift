@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false  # 不要因为一个平台失败就取消其他平台
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [macos-latest, windows-latest]
         
     steps:
       - name: Checkout code
@@ -28,12 +28,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libnss3-dev libatk-bridge2.0-dev libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libxss1 libasound2
-        
       - name: Build for macOS
         if: matrix.os == 'macos-latest'
         run: npm run build:mac
@@ -43,12 +37,6 @@ jobs:
       - name: Build for Windows
         if: matrix.os == 'windows-latest'
         run: npm run build:win
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Build for Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: npm run build:linux
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
@@ -69,17 +57,6 @@ jobs:
           path: |
             dist/*.exe
             dist/*.exe.blockmap
-            
-      - name: Upload Linux artifacts
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-packages
-          path: |
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.rpm
-            dist/*.*map
 
   release:
     needs: build
@@ -113,7 +90,6 @@ jobs:
             
             - **macOS**: 下载 `.dmg` 文件
             - **Windows**: 下载 `.exe` 安装程序
-            - **Linux**: 下载 `.AppImage` 或 `.deb` 文件
             
             ### ✨ 新功能
             - 支持 VSCode、Cursor、Trae、Windsurf、Qoder 编辑器
@@ -130,10 +106,6 @@ jobs:
             #### Windows
             1. 下载 `.exe` 安装程序
             2. 运行安装程序并按提示操作
-            
-            #### Linux
-            1. 下载 `.AppImage` 文件并添加执行权限
-            2. 或下载 `.deb` 文件使用包管理器安装
             
             ---
             
@@ -169,14 +141,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/windows-installer/Shift Setup 1.0.0.exe
           asset_name: Shift-Setup-${{ github.ref_name }}.exe
-          asset_content_type: application/octet-stream
-          
-      - name: Upload Linux AppImage
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/linux-packages/Shift-1.0.0.AppImage
-          asset_name: Shift-${{ github.ref_name }}-linux.AppImage
           asset_content_type: application/octet-stream
