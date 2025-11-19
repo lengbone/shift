@@ -61,7 +61,8 @@
         "provider": "github",
         "owner": "lengbone",
         "repo": "shift",
-        "releaseType": "release"
+        "releaseType": "release",
+        "publishAutoUpdate": true
       }
     ],
     "mac": {
