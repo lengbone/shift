@@ -14,7 +14,8 @@ class ConfigManager {
       trae: this.getTraePath(),
       windsurf: this.getWindsurfPath(),
       qoder: this.getQoderPath(),
-      kiro: this.getKiroPath()
+      kiro: this.getKiroPath(),
+      antigravity: this.getAntigravityPath()
     };
   }
 
@@ -100,15 +101,15 @@ class ConfigManager {
     }
   }
 
-  getKiroPath() {
-    // Kiro 基于VSCode，路径类似
+  getAntigravityPath() {
+    // Antigravity 基于VSCode，路径类似
     switch (this.platform) {
       case 'win32':
-        return path.join(this.homeDir, 'AppData', 'Roaming', 'Kiro', 'User');
+        return path.join(this.homeDir, 'AppData', 'Roaming', 'Antigravity', 'User');
       case 'darwin':
-        return path.join(this.homeDir, 'Library', 'Application Support', 'Kiro', 'User');
+        return path.join(this.homeDir, 'Library', 'Application Support', 'Antigravity', 'User');
       case 'linux':
-        return path.join(this.homeDir, '.config', 'Kiro', 'User');
+        return path.join(this.homeDir, '.config', 'Antigravity', 'User');
       default:
         return null;
     }

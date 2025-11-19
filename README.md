@@ -14,6 +14,7 @@
 - Windsurf
 - Qoder
 - Kiro
+- Antigravity
 
 ## 功能
 
