@@ -13,7 +13,8 @@ class ConfigManager {
       cursor: this.getCursorPath(),
       trae: this.getTraePath(),
       windsurf: this.getWindsurfPath(),
-      qoder: this.getQoderPath()
+      qoder: this.getQoderPath(),
+      kiro: this.getKiroPath()
     };
   }
 
@@ -80,6 +81,34 @@ class ConfigManager {
         return path.join(this.homeDir, 'Library', 'Application Support', 'Qoder', 'User');
       case 'linux':
         return path.join(this.homeDir, '.config', 'Qoder', 'User');
+      default:
+        return null;
+    }
+  }
+
+  getKiroPath() {
+    // Kiro 基于VSCode，路径类似
+    switch (this.platform) {
+      case 'win32':
+        return path.join(this.homeDir, 'AppData', 'Roaming', 'Kiro', 'User');
+      case 'darwin':
+        return path.join(this.homeDir, 'Library', 'Application Support', 'Kiro', 'User');
+      case 'linux':
+        return path.join(this.homeDir, '.config', 'Kiro', 'User');
+      default:
+        return null;
+    }
+  }
+
+  getKiroPath() {
+    // Kiro 基于VSCode，路径类似
+    switch (this.platform) {
+      case 'win32':
+        return path.join(this.homeDir, 'AppData', 'Roaming', 'Kiro', 'User');
+      case 'darwin':
+        return path.join(this.homeDir, 'Library', 'Application Support', 'Kiro', 'User');
+      case 'linux':
+        return path.join(this.homeDir, '.config', 'Kiro', 'User');
       default:
         return null;
     }

@@ -13,7 +13,8 @@
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
-    "version": "echo $npm_package_version"
+    "version": "echo $npm_package_version",
+    "test": "jest"
   },
   "keywords": [
     "vscode",
@@ -21,6 +22,7 @@
     "trae",
     "windsurf",
     "qoder",
+    "kiro",
     "config",
     "migration"
   ],
@@ -29,6 +31,8 @@
   "devDependencies": {
     "electron": "^39.1.2",
     "electron-builder": "^24.9.1",
+    "fast-check": "^4.3.0",
+    "jest": "^30.2.0",
     "svg2png-many": "^0.0.7"
   },
   "dependencies": {

@@ -37,6 +37,11 @@ class ExtensionManager {
         extensionsPath: this.getQoderExtensionsPath(),
         command: this.getQoderCommand(),
         installCommand: this.getQoderCommand() + ' --install-extension'
+      },
+      kiro: {
+        extensionsPath: this.getKiroExtensionsPath(),
+        command: this.getKiroCommand(),
+        installCommand: this.getKiroCommand() + ' --install-extension'
       }
     };
   }
@@ -173,6 +178,35 @@ class ExtensionManager {
 
   getQoderCommand() {
     return 'qoder'; // Qoder 可能没有标准安装路径，先用简单命令
+  }
+
+  getKiroExtensionsPath() {
+    // Kiro 扩展路径
+    switch (this.platform) {
+      case 'win32':
+        return path.join(this.homeDir, '.kiro', 'extensions');
+      case 'darwin':
+        return path.join(this.homeDir, '.kiro', 'extensions');
+      case 'linux':
+        return path.join(this.homeDir, '.kiro', 'extensions');
+      default:
+        return null;
+    }
+  }
+
+  getKiroCommand() {
+    switch (this.platform) {
+      case 'win32':
+        return 'kiro';
+      case 'darwin':
+        const macPaths = [
+          'kiro',
+          '/Applications/Kiro.app/Contents/Resources/app/bin/kiro'
+        ];
+        return this.findWorkingCommand(macPaths);
+      default:
+        return 'kiro';
+    }
   }
 
   // 查找可用的命令路径

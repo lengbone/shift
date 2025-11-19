@@ -13,6 +13,7 @@
 - Trae
 - Windsurf
 - Qoder
+- Kiro
 
 ## 功能
 
