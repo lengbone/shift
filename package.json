@@ -1,6 +1,6 @@
 {
   "name": "shift",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "现代化跨平台编辑器配置迁移工具",
   "main": "src/main.js",
   "scripts": {
@@ -67,6 +67,8 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "assets/icon.icns",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
       "target": [
         {
           "target": "dmg",

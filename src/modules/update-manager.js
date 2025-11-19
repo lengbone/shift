@@ -34,6 +34,13 @@ class UpdateManager {
     autoUpdater.autoDownload = false; // 不自动下载，由用户控制
     autoUpdater.autoInstallOnAppQuit = true; // 退出时自动安装
     
+    // 禁用代码签名验证（适用于未签名的应用）
+    if (process.platform === 'darwin') {
+      autoUpdater.allowDowngrade = false;
+      // 注意：这会降低安全性，但对于开源项目是必要的
+      process.env.ELECTRON_UPDATER_ALLOW_DOWNGRADE = 'false';
+    }
+    
     // 设置更新服务器 URL（确保使用 HTTPS）
     if (autoUpdater.getFeedURL()) {
       const feedURL = autoUpdater.getFeedURL();

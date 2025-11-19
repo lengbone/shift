@@ -1,5 +1,13 @@
 # 更新日志
 
+## [1.0.7] - 2025-11-19
+
+修复：
+
+- 修复 macOS 代码签名验证错误
+- 禁用 macOS 的 hardenedRuntime 和 gatekeeperAssess（适用于开源项目）
+- 优化 macOS 自动更新配置
+
 ## [1.0.6] - 2025-11-19
 
 修复：
