@@ -42,6 +42,11 @@ class ExtensionManager {
         extensionsPath: this.getKiroExtensionsPath(),
         command: this.getKiroCommand(),
         installCommand: this.getKiroCommand() + ' --install-extension'
+      },
+      antigravity: {
+        extensionsPath: this.getAntigravityExtensionsPath(),
+        command: this.getAntigravityCommand(),
+        installCommand: this.getAntigravityCommand() + ' --install-extension'
       }
     };
   }
@@ -206,6 +211,35 @@ class ExtensionManager {
         return this.findWorkingCommand(macPaths);
       default:
         return 'kiro';
+    }
+  }
+
+  getAntigravityExtensionsPath() {
+    // Antigravity 扩展路径
+    switch (this.platform) {
+      case 'win32':
+        return path.join(this.homeDir, '.antigravity', 'extensions');
+      case 'darwin':
+        return path.join(this.homeDir, '.antigravity', 'extensions');
+      case 'linux':
+        return path.join(this.homeDir, '.antigravity', 'extensions');
+      default:
+        return null;
+    }
+  }
+
+  getAntigravityCommand() {
+    switch (this.platform) {
+      case 'win32':
+        return 'antigravity';
+      case 'darwin':
+        const macPaths = [
+          'antigravity',
+          '/Applications/Antigravity.app/Contents/Resources/app/bin/antigravity'
+        ];
+        return this.findWorkingCommand(macPaths);
+      default:
+        return 'antigravity';
     }
   }
 
