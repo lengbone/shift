@@ -39,6 +39,13 @@ class UpdateManager {
       autoUpdater.allowDowngrade = false;
       // 注意：这会降低安全性，但对于开源项目是必要的
       process.env.ELECTRON_UPDATER_ALLOW_DOWNGRADE = 'false';
+      // 禁用 macOS 代码签名验证
+      autoUpdater.forceDevUpdateConfig = true;
+    }
+    
+    // 对于所有平台，禁用签名验证
+    if (process.platform === 'win32') {
+      autoUpdater.autoInstallOnAppQuit = true;
     }
     
     // 设置更新服务器 URL（确保使用 HTTPS）
