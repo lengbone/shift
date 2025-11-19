@@ -1,3 +1,9 @@
+// 禁用 macOS 代码签名验证（必须在任何 electron 模块加载之前设置）
+if (process.platform === 'darwin') {
+  process.env.ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES = 'true';
+  process.env.CSC_IDENTITY_AUTO_DISCOVERY = 'false';
+}
+
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs-extra');
