@@ -1158,8 +1158,8 @@ class SettingsUI {
         const versionResult = await ipcRenderer.invoke('get-current-version');
         if (versionResult.success) {
             document.getElementById('settingsCurrentVersion').textContent = 'v' + versionResult.version;
-            // 在开发环境下，显示当前版本作为最新版本
-            document.getElementById('settingsLatestVersion').textContent = 'v' + versionResult.version + ' (开发模式)';
+            // 初始显示检查中
+            document.getElementById('settingsLatestVersion').textContent = '检查中...';
         }
 
         // 监听更新事件来更新最新版本显示
@@ -1172,7 +1172,9 @@ class SettingsUI {
         });
 
         ipcRenderer.on('update-error', () => {
-            document.getElementById('settingsLatestVersion').textContent = '检查失败';
+            // 在生产环境下，如果检查失败，显示当前版本
+            const currentVersion = document.getElementById('settingsCurrentVersion').textContent;
+            document.getElementById('settingsLatestVersion').textContent = currentVersion;
         });
     }
 

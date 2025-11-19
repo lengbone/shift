@@ -55,6 +55,11 @@ Thumbs.db
 # Update config (user-specific)
 update-config.json
 
+# Update metadata files (generated)
+latest-mac.yml
+latest.yml
+latest-linux.yml
+
 # Test files (if any)
 test-update.js
 dev-app-update.yml

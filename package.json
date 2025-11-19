@@ -1,6 +1,6 @@
 {
   "name": "shift",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "现代化跨平台编辑器配置迁移工具",
   "main": "src/main.js",
   "scripts": {
@@ -11,6 +11,7 @@
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux",
+    "generate-update-files": "node scripts/generate-update-files.js",
     "release:patch": "node scripts/release.js patch",
     "release:minor": "node scripts/release.js minor",
     "release:major": "node scripts/release.js major",
@@ -59,7 +60,8 @@
       {
         "provider": "github",
         "owner": "lengbone",
-        "repo": "shift"
+        "repo": "shift",
+        "releaseType": "release"
       }
     ],
     "mac": {

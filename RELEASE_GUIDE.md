@@ -192,6 +192,70 @@ Release v1.0.1/
 2. **标签冲突**：确保版本标签唯一
 3. **网络问题**：重新运行失败的工作流程
 
+### Draft Release 不会自动发布
+
+如果 GitHub Release 保持 Draft（草稿）状态：
+
+1. **自动发布配置**：确保 `package.json` 中配置了 `releaseType: "release"`
+   ```json
+   "publish": [
+     {
+       "provider": "github",
+       "owner": "lengbone",
+       "repo": "shift",
+       "releaseType": "release"
+     }
+   ]
+   ```
+
+2. **手动发布草稿**：
+   - 访问 GitHub Releases 页面
+   - 找到 Draft 版本
+   - 点击 "Edit" 按钮
+   - 取消勾选 "Set as a pre-release"
+   - 点击 "Publish release" 按钮
+
+3. **删除旧的 Draft**：
+   - 如果有多个 Draft 版本，可以删除旧的
+   - 点击 Draft 版本的 "Delete" 按钮
+
+### 缺少 latest-mac.yml 等更新文件
+
+如果自动更新检查失败，提示找不到 `latest-mac.yml`：
+
+1. **原因**：Release 是 Draft 状态，或构建时未生成更新元数据文件
+
+2. **解决方案**：
+   
+   **方法 1: 发布 Draft Release**
+   - 访问 GitHub Releases 页面
+   - 发布 Draft 版本（见上文）
+   
+   **方法 2: 手动生成并上传更新文件**
+   ```bash
+   # 构建应用
+   npm run build
+   
+   # 生成更新元数据文件
+   npm run generate-update-files
+   
+   # 文件会生成在 dist 目录中：
+   # - latest-mac.yml (macOS)
+   # - latest.yml (Windows)
+   # - latest-linux.yml (Linux)
+   ```
+   
+   然后手动上传这些文件到 GitHub Release
+
+3. **验证**：
+   - 确保 Release 已发布（不是 Draft）
+   - 确保以下文件存在于 Release 中：
+     - `latest-mac.yml`
+     - `latest.yml`
+     - `latest-linux.yml`
+   - 访问 URL 验证文件可访问：
+     `https://github.com/lengbone/shift/releases/download/v1.0.3/latest-mac.yml`
+
 ### 版本管理问题
 
 1. **标签已存在**：删除本地和远程标签后重新创建
