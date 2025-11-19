@@ -6,8 +6,10 @@ const os = require('os');
 const ConfigManager = require('./modules/config-manager');
 const ExtensionManager = require('./modules/extension-manager');
 const BackupManager = require('./modules/backup-manager');
+const UpdateManager = require('./modules/update-manager');
 
 let mainWindow;
+let updateManager;
 
 function createWindow() {
   // 设置应用图标
@@ -44,6 +46,10 @@ function createWindow() {
   if (process.argv.includes('--dev')) {
     mainWindow.webContents.openDevTools();
   }
+
+  // 初始化更新管理器
+  updateManager = new UpdateManager(mainWindow);
+  updateManager.initialize();
 
   // 处理窗口控制IPC消息
   ipcMain.on('window-close', () => {
@@ -482,6 +488,93 @@ ipcMain.handle('save-editor-settings', async (event, editorType, data) => {
     const settingsPath = path.join(editorPath, 'settings.json');
     await fs.writeJson(settingsPath, data, { spaces: 2 });
     return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+// 更新管理 IPC 处理器
+ipcMain.handle('check-for-updates', async () => {
+  try {
+    if (updateManager) {
+      await updateManager.checkForUpdates(true);
+      return { success: true };
+    }
+    return { success: false, error: '更新管理器未初始化' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('download-update', async () => {
+  try {
+    if (updateManager) {
+      await updateManager.downloadUpdate();
+      return { success: true };
+    }
+    return { success: false, error: '更新管理器未初始化' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('install-update', async () => {
+  try {
+    if (updateManager) {
+      updateManager.quitAndInstall();
+      return { success: true };
+    }
+    return { success: false, error: '更新管理器未初始化' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('skip-version', async (event, version) => {
+  try {
+    if (updateManager) {
+      const config = updateManager.getUpdateConfig();
+      config.skippedVersion = version;
+      updateManager.saveUpdateConfig(config);
+      return { success: true };
+    }
+    return { success: false, error: '更新管理器未初始化' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('get-update-config', async () => {
+  try {
+    if (updateManager) {
+      const config = updateManager.getUpdateConfig();
+      return { success: true, config };
+    }
+    return { success: false, error: '更新管理器未初始化' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('save-update-config', async (event, config) => {
+  try {
+    if (updateManager) {
+      updateManager.saveUpdateConfig(config);
+      return { success: true };
+    }
+    return { success: false, error: '更新管理器未初始化' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('get-current-version', async () => {
+  try {
+    if (updateManager) {
+      const version = updateManager.getCurrentVersion();
+      return { success: true, version };
+    }
+    return { success: false, error: '更新管理器未初始化' };
   } catch (error) {
     return { success: false, error: error.message };
   }

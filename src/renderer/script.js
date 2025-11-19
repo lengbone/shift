@@ -931,3 +931,263 @@ function toggleTheme() {
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     app.setTheme(newTheme);
 }
+
+
+// 更新管理器
+class UpdateUI {
+    constructor() {
+        this.currentUpdateInfo = null;
+        this.init();
+    }
+
+    init() {
+        this.bindUpdateEvents();
+        this.setupIPCListeners();
+    }
+
+    bindUpdateEvents() {
+        // 更新通知对话框按钮
+        document.getElementById('skipVersionBtn')?.addEventListener('click', () => {
+            this.skipVersion();
+        });
+
+        document.getElementById('remindLaterBtn')?.addEventListener('click', () => {
+            this.hideUpdateDialog();
+        });
+
+        document.getElementById('downloadUpdateBtn')?.addEventListener('click', () => {
+            this.startDownload();
+        });
+
+        // 下载对话框按钮
+        document.getElementById('cancelDownloadBtn')?.addEventListener('click', () => {
+            this.hideDownloadDialog();
+        });
+
+        // 安装对话框按钮
+        document.getElementById('installLaterBtn')?.addEventListener('click', () => {
+            this.hideInstallDialog();
+        });
+
+        document.getElementById('installNowBtn')?.addEventListener('click', () => {
+            this.installUpdate();
+        });
+    }
+
+    setupIPCListeners() {
+        // 检查更新中
+        ipcRenderer.on('update-checking', () => {
+            console.log('正在检查更新...');
+        });
+
+        // 发现新版本
+        ipcRenderer.on('update-available', (event, info) => {
+            this.currentUpdateInfo = info;
+            this.showUpdateDialog(info);
+        });
+
+        // 已是最新版本
+        ipcRenderer.on('update-not-available', (event, info) => {
+            console.log('已是最新版本:', info.version);
+        });
+
+        // 下载进度
+        ipcRenderer.on('download-progress', (event, progress) => {
+            this.updateDownloadProgress(progress);
+        });
+
+        // 更新已下载
+        ipcRenderer.on('update-downloaded', (event, info) => {
+            this.hideDownloadDialog();
+            this.showInstallDialog(info);
+        });
+
+        // 更新错误
+        ipcRenderer.on('update-error', (event, error) => {
+            console.error('更新错误:', error);
+            this.hideDownloadDialog();
+            alert('更新失败: ' + error.error);
+        });
+    }
+
+    showUpdateDialog(info) {
+        document.getElementById('updateVersion').textContent = 'v' + info.version;
+        
+        // 获取当前版本
+        ipcRenderer.invoke('get-current-version').then(result => {
+            if (result.success) {
+                document.getElementById('currentVersion').textContent = 'v' + result.version;
+            }
+        });
+
+        // 显示更新日志
+        const notes = info.releaseNotes || '暂无更新说明';
+        document.getElementById('updateNotes').innerHTML = notes.replace(/\n/g, '<br>');
+
+        document.getElementById('updateDialog').style.display = 'flex';
+    }
+
+    hideUpdateDialog() {
+        document.getElementById('updateDialog').style.display = 'none';
+    }
+
+    showDownloadDialog() {
+        document.getElementById('downloadDialog').style.display = 'flex';
+        this.resetDownloadProgress();
+    }
+
+    hideDownloadDialog() {
+        document.getElementById('downloadDialog').style.display = 'none';
+    }
+
+    showInstallDialog(info) {
+        document.getElementById('installDialog').style.display = 'flex';
+    }
+
+    hideInstallDialog() {
+        document.getElementById('installDialog').style.display = 'none';
+    }
+
+    resetDownloadProgress() {
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('progressPercent').textContent = '0';
+        document.getElementById('downloadedSize').textContent = '0 MB';
+        document.getElementById('totalSize').textContent = '0 MB';
+        document.getElementById('downloadSpeed').textContent = '0 MB/s';
+    }
+
+    updateDownloadProgress(progress) {
+        document.getElementById('progressFill').style.width = progress.percent + '%';
+        document.getElementById('progressPercent').textContent = progress.percent;
+        
+        const downloadedMB = (progress.transferred / 1024 / 1024).toFixed(2);
+        const totalMB = (progress.total / 1024 / 1024).toFixed(2);
+        const speedMBs = (progress.bytesPerSecond / 1024 / 1024).toFixed(2);
+        
+        document.getElementById('downloadedSize').textContent = downloadedMB + ' MB';
+        document.getElementById('totalSize').textContent = totalMB + ' MB';
+        document.getElementById('downloadSpeed').textContent = speedMBs + ' MB/s';
+    }
+
+    async skipVersion() {
+        if (this.currentUpdateInfo) {
+            await ipcRenderer.invoke('skip-version', this.currentUpdateInfo.version);
+            this.hideUpdateDialog();
+        }
+    }
+
+    async startDownload() {
+        this.hideUpdateDialog();
+        this.showDownloadDialog();
+        await ipcRenderer.invoke('download-update');
+    }
+
+    async installUpdate() {
+        await ipcRenderer.invoke('install-update');
+    }
+
+    async checkForUpdates() {
+        const result = await ipcRenderer.invoke('check-for-updates');
+        if (!result.success) {
+            alert('检查更新失败: ' + result.error);
+        }
+    }
+}
+
+// 初始化更新 UI
+const updateUI = new UpdateUI();
+
+// 设置面板管理
+class SettingsUI {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        this.loadSettings();
+        this.bindEvents();
+        this.loadVersionInfo();
+    }
+
+    bindEvents() {
+        // 自动检查更新复选框
+        document.getElementById('autoCheckUpdate')?.addEventListener('change', (e) => {
+            this.saveAutoCheckSetting(e.target.checked);
+        });
+
+        // 自动下载更新复选框
+        document.getElementById('autoDownloadUpdate')?.addEventListener('change', (e) => {
+            this.saveAutoDownloadSetting(e.target.checked);
+        });
+
+        // 立即检查更新按钮
+        document.getElementById('checkUpdateBtn')?.addEventListener('click', () => {
+            this.checkForUpdates();
+        });
+    }
+
+    async loadSettings() {
+        const result = await ipcRenderer.invoke('get-update-config');
+        if (result.success) {
+            const config = result.config;
+            document.getElementById('autoCheckUpdate').checked = config.autoCheck;
+            document.getElementById('autoDownloadUpdate').checked = config.autoDownload;
+        }
+    }
+
+    async saveAutoCheckSetting(enabled) {
+        const result = await ipcRenderer.invoke('get-update-config');
+        if (result.success) {
+            const config = result.config;
+            config.autoCheck = enabled;
+            await ipcRenderer.invoke('save-update-config', config);
+        }
+    }
+
+    async saveAutoDownloadSetting(enabled) {
+        const result = await ipcRenderer.invoke('get-update-config');
+        if (result.success) {
+            const config = result.config;
+            config.autoDownload = enabled;
+            await ipcRenderer.invoke('save-update-config', config);
+        }
+    }
+
+    async loadVersionInfo() {
+        // 获取当前版本
+        const versionResult = await ipcRenderer.invoke('get-current-version');
+        if (versionResult.success) {
+            document.getElementById('settingsCurrentVersion').textContent = 'v' + versionResult.version;
+            // 在开发环境下，显示当前版本作为最新版本
+            document.getElementById('settingsLatestVersion').textContent = 'v' + versionResult.version + ' (开发模式)';
+        }
+
+        // 监听更新事件来更新最新版本显示
+        ipcRenderer.on('update-available', (event, info) => {
+            document.getElementById('settingsLatestVersion').textContent = 'v' + info.version;
+        });
+
+        ipcRenderer.on('update-not-available', (event, info) => {
+            document.getElementById('settingsLatestVersion').textContent = 'v' + info.version + ' (已是最新)';
+        });
+
+        ipcRenderer.on('update-error', () => {
+            document.getElementById('settingsLatestVersion').textContent = '检查失败';
+        });
+    }
+
+    async checkForUpdates() {
+        document.getElementById('checkUpdateBtn').disabled = true;
+        document.getElementById('checkUpdateBtn').textContent = '检查中...';
+        
+        await updateUI.checkForUpdates();
+        
+        setTimeout(() => {
+            document.getElementById('checkUpdateBtn').disabled = false;
+            document.getElementById('checkUpdateBtn').textContent = '立即检查更新';
+        }, 2000);
+    }
+}
+
+// 初始化设置 UI
+const settingsUI = new SettingsUI();

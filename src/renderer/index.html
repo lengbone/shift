@@ -88,6 +88,15 @@
                     </span>
                     <span class="nav-text">操作日志</span>
                 </div>
+                <div class="nav-item" data-tab="settings">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.8"/>
+                            <path d="M10 1 L10 3 M10 17 L10 19 M19 10 L17 10 M3 10 L1 10 M15.5 4.5 L14.1 5.9 M5.9 14.1 L4.5 15.5 M15.5 15.5 L14.1 14.1 M5.9 5.9 L4.5 4.5" stroke="currentColor" stroke-width="1.5" opacity="0.8"/>
+                        </svg>
+                    </span>
+                    <span class="nav-text">设置</span>
+                </div>
             </div>
             
             <!-- 暗色模式切换按钮 -->
@@ -211,7 +220,110 @@
                     <div id="logContainer" class="log-container"></div>
                 </div>
             </div>
+
+            <!-- 设置 -->
+            <div class="content-panel" id="settings-panel">
+                <div class="panel-header">
+                    <h2>设置</h2>
+                    <p>应用程序设置和偏好</p>
+                </div>
+                <div class="panel-body">
+                    <div class="settings-section">
+                        <h3>更新设置</h3>
+                        <div class="setting-item">
+                            <label class="setting-label">
+                                <input type="checkbox" id="autoCheckUpdate" checked>
+                                <span>自动检查更新</span>
+                            </label>
+                            <p class="setting-description">启动时自动检查新版本</p>
+                        </div>
+                        <div class="setting-item">
+                            <label class="setting-label">
+                                <input type="checkbox" id="autoDownloadUpdate">
+                                <span>自动下载更新</span>
+                            </label>
+                            <p class="setting-description">发现新版本时自动下载</p>
+                        </div>
+                        <div class="setting-item">
+                            <div class="version-info">
+                                <p>当前版本: <span id="settingsCurrentVersion">加载中...</span></p>
+                                <p>最新版本: <span id="settingsLatestVersion">检查中...</span></p>
+                            </div>
+                            <button id="checkUpdateBtn" class="btn btn-primary">立即检查更新</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <!-- 更新通知对话框 -->
+    <div id="updateDialog" class="modal" style="display: none;">
+        <div class="modal-content update-dialog">
+            <div class="modal-header">
+                <h3>🎉 发现新版本</h3>
+            </div>
+            <div class="modal-body">
+                <div class="update-info">
+                    <p class="update-version">Shift <span id="updateVersion">v1.0.3</span> 现已可用</p>
+                    <p class="current-version">当前版本: <span id="currentVersion">v1.0.2</span></p>
+                </div>
+                <div class="update-notes">
+                    <h4>更新内容:</h4>
+                    <div id="updateNotes" class="notes-content">
+                        • 新增自动更新功能<br>
+                        • 修复配置导入问题<br>
+                        • 性能优化
+                    </div>
+                </div>
+                <div class="update-actions">
+                    <button id="skipVersionBtn" class="btn btn-secondary">跳过此版本</button>
+                    <button id="remindLaterBtn" class="btn btn-secondary">稍后提醒</button>
+                    <button id="downloadUpdateBtn" class="btn btn-primary">立即更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下载进度对话框 -->
+    <div id="downloadDialog" class="modal" style="display: none;">
+        <div class="modal-content download-dialog">
+            <div class="modal-header">
+                <h3>正在下载更新...</h3>
+            </div>
+            <div class="modal-body">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text"><span id="progressPercent">0</span>%</p>
+                </div>
+                <div class="download-info">
+                    <p>已下载: <span id="downloadedSize">0 MB</span> / <span id="totalSize">0 MB</span></p>
+                    <p>速度: <span id="downloadSpeed">0 MB/s</span></p>
+                </div>
+                <div class="download-actions">
+                    <button id="cancelDownloadBtn" class="btn btn-secondary">取消下载</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 安装提示对话框 -->
+    <div id="installDialog" class="modal" style="display: none;">
+        <div class="modal-content install-dialog">
+            <div class="modal-header">
+                <h3>✅ 更新已下载</h3>
+            </div>
+            <div class="modal-body">
+                <p>更新已下载完成，是否立即安装？</p>
+                <p class="install-note">安装过程中应用将会重启</p>
+                <div class="install-actions">
+                    <button id="installLaterBtn" class="btn btn-secondary">稍后安装</button>
+                    <button id="installNowBtn" class="btn btn-primary">立即安装</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

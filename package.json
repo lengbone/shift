@@ -1,11 +1,12 @@
 {
   "name": "shift",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "现代化跨平台编辑器配置迁移工具",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "dev:update": "electron . --dev --test-update",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",
@@ -36,7 +37,9 @@
     "svg2png-many": "^0.0.7"
   },
   "dependencies": {
+    "electron-updater": "^6.6.2",
     "fs-extra": "^11.2.0",
+    "semver": "^7.7.3",
     "tar": "^6.2.0"
   },
   "build": {
@@ -51,6 +54,13 @@
       "src/**/*",
       "assets/**/*",
       "node_modules/**/*"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "lengbone",
+        "repo": "shift"
+      }
     ],
     "mac": {
       "category": "public.app-category.developer-tools",

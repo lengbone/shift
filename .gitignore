@@ -52,4 +52,14 @@ Thumbs.db
 # Electron builder cache
 .electron-builder-cache/
 
+# Update config (user-specific)
+update-config.json
+
+# Test files (if any)
+test-update.js
+dev-app-update.yml
+*_TEST.md
+UPDATE_TESTING_GUIDE.md
+
+# Kiro specs (optional - remove this line if you want to commit specs)
 .kiro
