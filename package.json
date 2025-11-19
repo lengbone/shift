@@ -1,6 +1,6 @@
 {
   "name": "shift",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "现代化跨平台编辑器配置迁移工具",
   "main": "src/main.js",
   "scripts": {
@@ -70,6 +70,13 @@
       "target": [
         {
           "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
           "arch": [
             "x64",
             "arm64"
